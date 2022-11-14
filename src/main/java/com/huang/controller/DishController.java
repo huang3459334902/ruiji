@@ -28,6 +28,7 @@ public class DishController {
     @Autowired
     private DishService dishService;
 
+
     @PostMapping("")
     public R<String> saveDish(@RequestBody DishDTO dishDTO) {
         return dishService.saveWithFlavor(dishDTO);
@@ -52,6 +53,7 @@ public class DishController {
     public R<String> statusUpdateBiId(@PathVariable int status, String ids) {
         return dishService.statusUpdateBiId(status,ids);
     }
+
 
     @DeleteMapping("")
     public R<String> deleteByIds(String ids) {

@@ -3,11 +3,14 @@ package com.huang.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.huang.common.BaseContest;
 import com.huang.common.R;
 import com.huang.entity.AddressBook;
 import com.huang.service.AddressBookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,17 +32,24 @@ public class AddressBookController {
     @Autowired
     private AddressBookService addressBookService;
 
+    @CacheEvict(value = "DishCache",allEntries = true)
     @PostMapping("")
     public R<String> insertAddressBook(@RequestBody AddressBook addressBook) {
         addressBookService.save(addressBook);
         return R.success("添加成功");
     }
 
+    @Cacheable(value = "AddressBookCache",key = "'List'+#root.target.getBaseContest()")
     @GetMapping("/list")
     public R<List<AddressBook>> list() {
         return R.success(addressBookService.list());
     }
+    public Long getBaseContest() {
+        return BaseContest.getCurrentId();
+    }
 
+
+    @CacheEvict(value = "AddressBookCache",allEntries = true)
     @PutMapping("/default")
     public R<String> updateByIdDefault(@RequestBody AddressBook addressBook) {
         addressBook.setIsDefault(1);
@@ -55,6 +65,7 @@ public class AddressBookController {
         return R.success("成功");
     }
 
+    @CacheEvict(value = "AddressBookCache",allEntries = true)
     @GetMapping("/default")
     public R<AddressBook> default1() {
         LambdaQueryWrapper<AddressBook> addressBookLambdaQueryWrapper = new LambdaQueryWrapper<>();

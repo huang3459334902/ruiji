@@ -14,6 +14,8 @@ import com.huang.entity.Dish;
 import com.huang.entity.Setmeal;
 import com.huang.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -53,12 +55,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         }
     }
 
+    @CacheEvict(value = "CategoryCache",allEntries = true)
     @Override
     public R<String> saveCategory(Category category) {
         categoryMapper.insert(category);
         return R.success("新增成功");
     }
 
+    @Cacheable(value = "CategoryCache",key = "'Page'+#page+#pageSize")
     @Override
     public R<Page> pageCategory(int page, int pageSize) {
         Page<Category> categoryPage = new Page<>(page, pageSize);
@@ -68,7 +72,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         return R.success(categoryPage);
     }
 
+
     //根据id删除分类 要判断是否关联别的数据
+    @CacheEvict(value = "CategoryCache",allEntries = true)
     @Override
     public R<String> deleteCategory(Long id) {
 
@@ -88,12 +94,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         return R.success("删除成功");
     }
 
+    @CacheEvict(value = "CategoryCache",allEntries = true)
     @Override
     public R<String> updateByIdCategory(Category category) {
         categoryMapper.updateById(category);
         return R.success("修改成功");
     }
 
+    @Cacheable(value = "CategoryCache",key = "'List<Category>'+#category.type")
     @Override
     public R<List<Category>> list(Category category) {
         LambdaQueryWrapper<Category> categoryWrapper = new LambdaQueryWrapper();

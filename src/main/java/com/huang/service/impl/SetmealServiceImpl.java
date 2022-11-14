@@ -18,6 +18,8 @@ import com.huang.entity.SetmealDish;
 import com.huang.service.SetmealService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -58,6 +60,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         }
     }
 
+    @CacheEvict(value = "SetmealCache",allEntries = true)
     @Override
     public R<String> saveSetmeal(SetmealDTO setmealDTO) {
 
@@ -72,6 +75,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         return R.success("添加成功");
     }
 
+    @Cacheable(value = "SetmealCache",key = "'Page'+#page+#pageSize+#name")
     @Override
     public R<Page> page(int page, int pageSize, String name) {
         Page<Setmeal> setmealPage = new Page<>(page, pageSize);
@@ -98,6 +102,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         return R.success(setmealDTOPage);
     }
 
+    @CacheEvict(value = "SetmealCache",allEntries = true)
     @Override
     public R<String> deleteSetmealByIds(String ids) {
         List<String> split = Arrays.asList(ids.split(","));

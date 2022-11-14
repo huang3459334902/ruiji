@@ -11,6 +11,8 @@ import com.huang.dao.EmployeeMapper;
 import com.huang.entity.Employee;
 import com.huang.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.unit.DataUnit;
@@ -72,6 +74,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         return R.success(employee1);
     }
 
+    @CacheEvict(value = "EmployeeCache",allEntries = true)
     @Override
     public R<String> addEmployee(Employee employee) {
         String s = DigestUtils.md5DigestAsHex("123456".getBytes());
@@ -82,6 +85,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         return R.success("新增成功");
     }
 
+    @Cacheable(value = "EmployeeCache",key = "'Page'+#page+#pageSize+#name")
     @Override
     public R<Page> pageEmployee(int page, int pageSize, String name) {
 
@@ -96,6 +100,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         return R.success(employeePage);
     }
 
+    @CacheEvict(value = "EmployeeCache",allEntries = true)
     @Override
     public R<String> update(Employee employee) {
 

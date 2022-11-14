@@ -24,7 +24,16 @@ spring:
           ssl:
             enable: true
 
+  # 配置redis
+  redis:
+    host: 192.168.159.131
+    port: 6379
+    password: 280263
 
+  # 配置缓存有效时期
+  cache:
+    redis:
+      time-to-live: 1800000
 
 
 #配置日志

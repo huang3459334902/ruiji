@@ -13,6 +13,8 @@ import com.huang.service.SetmealService;
 import com.huang.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +39,7 @@ public class SetmealController {
     @Autowired
     private ShoppingCartService shoppingCartService;
 
+    @CacheEvict(value = "setmealCache",allEntries = true) //删除 setmealCache 缓存的数据
     @PostMapping("")
     public R<String> saveSetmeal(@RequestBody SetmealDTO setmealDTO) {
         return setmealService.saveSetmeal(setmealDTO);
@@ -47,11 +50,13 @@ public class SetmealController {
         return setmealService.page(page,pageSize,name);
     }
 
+    @CacheEvict(value = "setmealCache",allEntries = true) //删除 setmealCache 缓存的数据
     @DeleteMapping("")
     public R<String> deleteSetmealByIds(String ids) {
         return setmealService.deleteSetmealByIds(ids);
     }
 
+    @Cacheable(value = "setmealCache",key = "'List<Setmeal>'+#setmeal.categoryId")  //查询缓存数据
     @GetMapping("/list")
     public R<List<Setmeal>> list(Setmeal setmeal) {
         LambdaQueryWrapper<Setmeal> setmealLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -59,6 +64,7 @@ public class SetmealController {
         setmealLambdaQueryWrapper.eq(Setmeal::getStatus,1);
         return R.success(setmealService.list(setmealLambdaQueryWrapper));
     }
+
 
     @GetMapping("/dish/{id}")
     public R<Setmeal> dish(@PathVariable Long id) {

@@ -12,6 +12,7 @@ import com.huang.entity.*;
 import com.huang.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +60,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
         }
     }
 
+    @CacheEvict(value = "OrdersCache",allEntries = true)
     @Override
     @Transactional
     public R<String> submit(Orders orders) {

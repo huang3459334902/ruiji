@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Date;
  * @since 2022-11-12 15:07:53
  */
 @Data
-public class OrderDetail {
+public class OrderDetail implements Serializable {
     /**
      * 主键
      **/

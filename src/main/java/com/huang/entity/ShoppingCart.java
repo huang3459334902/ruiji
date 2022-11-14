@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Date;
  * @since 2022-11-11 21:53:40
  */
 @Data
-public class ShoppingCart {
+public class ShoppingCart implements Serializable {
     /**
      * 主键
      **/
